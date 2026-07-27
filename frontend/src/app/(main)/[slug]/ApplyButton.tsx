@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { postService } from '@/shared/services/post.service'; // Замени импорт на свой путь
+import { useTranslation } from 'react-i18next';
 
 interface ApplyButtonProps {
     slug: string;
@@ -12,7 +13,7 @@ interface ApplyButtonProps {
 
 export default function ApplyButton({ slug, formUrl, initialClicks }: ApplyButtonProps) {
     const [clicksCount, setClicksCount] = useState(initialClicks);
-
+    const { t } = useTranslation();
     const { mutate } = useMutation({
         mutationFn: async () => {
             return await postService.clickUrl(slug);
@@ -65,7 +66,9 @@ export default function ApplyButton({ slug, formUrl, initialClicks }: ApplyButto
                     <path d='M13 13l6-6' />
                     <path d='M21 3l-7 2l2 2l-3 3l1.5 1.5l3-3l2 2l2-7z' />
                 </svg>
-                {clicksCount.toLocaleString('ru-RU')} жолу басышты
+                {t('post.clicks', {
+                    count: clicksCount.toLocaleString('ru-RU'),
+                })}
             </span>
         </div>
     );

@@ -4,13 +4,13 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import i18n, { languages, type Language } from '@/shared/i18next/client'; // Укажите правильный путь к client.ts
+import { languages, type Language } from '@/shared/i18next/client'; // Укажите правильный путь к client.ts
 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const currentLang = (i18n.language as Language) || 'kg';
 
@@ -32,8 +32,14 @@ const Header = () => {
     };
 
     const navLinks = [
-        { href: '/', label: t('Ачык сынактар', 'Ачык сынактар') },
-        { href: '/closed-competiton', label: t('Жабык конкурстар', 'Жабык конкурстар') },
+        {
+            href: '/',
+            label: t('header.openCompetitions'),
+        },
+        {
+            href: '/closed-competiton',
+            label: t('header.closedCompetitions'),
+        },
     ];
 
     return (
@@ -46,7 +52,7 @@ const Header = () => {
                         alt='Окуу Китеби'
                         className='h-9 w-9 rounded-full object-cover ring-2 ring-brand/10 transition group-hover:ring-brand/30'
                     />
-                    <span className='text-base font-bold tracking-tight text-text sm:text-lg'>Kitepkura</span>
+                    <span className='text-base font-bold tracking-tight text-text sm:text-lg'> {t('header.logo')}</span>
                 </Link>
 
                 {/* Десктоп-навигация */}
@@ -70,7 +76,7 @@ const Header = () => {
                         href={'/'}
                         className='ml-2 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground shadow-sm shadow-brand/20 transition-all duration-200 hover:bg-brand-hover hover:shadow-md hover:shadow-brand/30 active:scale-95'
                     >
-                        {t('Арыз берүү', 'Арыз берүү')}
+                        {t('header.apply')}
                     </Link>
 
                     {/* Переключатель языка (Десктоп) */}
@@ -111,7 +117,7 @@ const Header = () => {
                     <button
                         type='button'
                         onClick={() => setMenuOpen(v => !v)}
-                        aria-label='Меню'
+                        aria-label={t('header.menu')}
                         aria-expanded={menuOpen}
                         className='flex h-10 w-10 items-center justify-center rounded-xl text-neutral-700 transition hover:bg-neutral-100 active:scale-90'
                     >
@@ -159,7 +165,7 @@ const Header = () => {
                             onClick={() => setMenuOpen(false)}
                             className='rounded-xl bg-brand py-3 text-center text-sm font-semibold text-brand-foreground shadow-sm transition hover:bg-brand-hover'
                         >
-                            {t('Арыз берүү', 'Арыз берүү')}
+                            {t('header.apply')}
                         </Link>
                     </nav>
                 </div>

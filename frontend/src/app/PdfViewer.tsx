@@ -5,6 +5,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { FiDownload, FiChevronLeft, FiChevronRight, FiMinus, FiPlus } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
@@ -18,7 +19,7 @@ export function PdfViewer({ fileUrl, fileName = 'document.pdf' }: PdfViewerProps
     const [pageNumber, setPageNumber] = useState(1);
     const [zoomAdjust, setZoomAdjust] = useState(-0.6);
     const [pageInput, setPageInput] = useState('1');
-
+    const { t } = useTranslation();
     // Размеры контейнера
     const [containerWidth, setContainerWidth] = useState(0);
     const [containerHeight, setContainerHeight] = useState(0);
@@ -137,7 +138,7 @@ export function PdfViewer({ fileUrl, fileName = 'document.pdf' }: PdfViewerProps
                         className='flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-white transition hover:bg-primary-700 sm:h-9 sm:w-auto sm:gap-2 sm:px-4'
                     >
                         <FiDownload size={16} />
-                        <span className='hidden text-sm font-semibold sm:inline'>Жүктөп алуу</span>
+                        <span className='hidden text-sm font-semibold sm:inline'> {t('dowload')}</span>
                     </a>
                 </div>
             </div>
