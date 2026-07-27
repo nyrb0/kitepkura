@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
+
 import QueryProvider from '@/shared/provider/QueryProvider';
-import I18nProvider from '@/shared/i18next/I18nProvider';
 
 export const metadata: Metadata = {
     title: 'Ачык конкурстар',
@@ -17,22 +17,11 @@ export const metadata: Metadata = {
     },
 };
 
-export default async function RootLayout({
-    children,
-    params,
-}: {
-    children: React.ReactNode;
-    params: Promise<{
-        lang: string;
-    }>;
-}) {
-    const { lang } = await params;
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang={lang}>
+        <html>
             <body>
-                <QueryProvider>
-                    <I18nProvider initialLanguage={lang}>{children}</I18nProvider>
-                </QueryProvider>
+                <QueryProvider>{children}</QueryProvider>
             </body>
         </html>
     );

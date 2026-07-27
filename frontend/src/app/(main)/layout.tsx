@@ -8,11 +8,11 @@ export default function UserLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <>
+        <div>
             <Header />
             <SiteVisitTracker />
             <main>{children}</main>
             <Footer />
-        </>
+        </div>
     );
 }
