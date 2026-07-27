@@ -37,6 +37,9 @@ services:
     build: ./backend
     container_name: backend
 
+    env_file:
+      - ./backend/.env
+
     restart: unless-stopped
 
     environment:
