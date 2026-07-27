@@ -270,7 +270,7 @@ const PostsPage = () => {
                                                 {post.postFiles.map(file => (
                                                     <li key={file.id}>
                                                         <a
-                                                            href={`${process.env.NEXT_PUBLIC_API_URL ?? ''}/${file.path.replace(/\\/g, '/')}`}
+                                                            href={`${process.env.NEXT_PUBLIC_BACKEND_URL ?? ''}/${file.path.replace(/\\/g, '/')}`}
                                                             target='_blank'
                                                             rel='noopener noreferrer'
                                                             className='flex items-center gap-1.5 rounded-[var(--radius-sm)] border px-2.5 py-1.5 text-xs text-[var(--color-text)] transition-colors hover:bg-[var(--color-neutral-100)]'
