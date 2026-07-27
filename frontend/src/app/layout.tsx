@@ -17,12 +17,21 @@ export const metadata: Metadata = {
     },
 };
 
-export default async function RootLayout({ children, params }: { children: React.ReactNode; params: { lang: string } }) {
+export default async function RootLayout({
+    children,
+    params,
+}: {
+    children: React.ReactNode;
+    params: Promise<{
+        lang: string;
+    }>;
+}) {
+    const { lang } = await params;
     return (
-        <html lang={params.lang}>
+        <html lang={lang}>
             <body>
                 <QueryProvider>
-                    <I18nProvider initialLanguage={params.lang}>{children}</I18nProvider>
+                    <I18nProvider initialLanguage={lang}>{children}</I18nProvider>
                 </QueryProvider>
             </body>
         </html>
