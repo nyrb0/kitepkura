@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+@theme {
+  /* === Основной синий (primary) === */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+
+  /* === Нейтральные (фон, текст, границы) === */
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  --color-neutral-950: #020617;
+
+  /* === Семантические статусы === */
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+
+  --color-info-500: #0ea5e9;
+  --color-info-600: #0284c7;
+
+  /* === Алиасы под интерфейс (можно менять глобально в одном месте) === */
+  --color-background: var(--color-neutral-50);
+  --color-surface: #ffffff;
+  --color-text: var(--color-neutral-900);
+  --color-text-muted: var(--color-neutral-500);
+  --color-border: var(--color-neutral-200);
+
+  --color-brand: var(--color-primary-600);
+  --color-brand-hover: var(--color-primary-700);
+  --color-brand-foreground: #ffffff;
+
+  /* === Шрифты === */
+  --font-sans: Arial, Helvetica, sans-serif;
+
+  /* === Радиусы === */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* === Тени === */
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-elevated: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -4px rgba(15, 23, 42, 0.1);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}

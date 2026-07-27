@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model admins {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model post {
+  id                  String          @id @default(uuid())
+  slug                String          @unique
+  name                Json
+  description         Json
+  urlForm             String
+  urlClicks           Int             @default(0)
+  isArchive           Boolean         @default(false)
+  archive_description String?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  postFiles           post_document[]
+  views               post_view[]
+}
+
+model post_view {
+  id        String   @id @default(uuid())
+  post_id   String
+  user_ip   String
+  createdAt DateTime @default(now())
+  post      post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@unique([post_id, user_ip])
+}
+
+model post_document {
+  id            String   @id @default(uuid())
+  post_id       String
+  original_name String?
+  mime_type     String?
+  size          Int?
+  path          String   @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  post          post     @relation(fields: [post_id], references: [id], onDelete: Cascade, map: "post_document_post_id_foreign")
+}
+
+model Visit {
+  id        String   @id @default(uuid())
+  ip        String? // Анонимизированный IP или хэш IP
+  userAgent String? // Информация о браузере/устройстве
+  path      String? // Страница, которую посетили (например, "/", "/posts/1")
+  date      String
+  createdAt DateTime @default(now())
+
+  @@unique([ip, date])
+  @@index([createdAt]) // Индекс критически важен для быстрых выборок по датам
+}

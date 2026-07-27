@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: kitepkura
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+    ports:
+      - "2000:2000"
+
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      API_INTERNAL_URL: http://backend:2000/api
+      NEXT_PUBLIC_API_URL: http://localhost:2000/api
+
+volumes:
+  postgres_data:
