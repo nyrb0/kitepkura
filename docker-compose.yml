@@ -1,54 +1,72 @@
 services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+
+    depends_on:
+      - frontend
+      - backend
+
   postgres:
     image: postgres:17-alpine
+    container_name: postgres
+
     restart: unless-stopped
+
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: kitepkura
-    ports:
-      - "5432:5432"
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d kitepkura"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+
+    expose:
+      - "5432"
 
   backend:
     build: ./backend
+    container_name: backend
+
     restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-    env_file:
-      - ./backend/.env
+
     environment:
       PORT: 2000
-    ports:
-      - "2000:2000"
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/kitepkura?schema=public
+
+    depends_on:
+      - postgres
+
+    expose:
+      - "2000"
+
     volumes:
       - backend_uploads:/app/uploads
 
   frontend:
-    build:
-      context: ./frontend
-      args:
-        NEXT_PUBLIC_API_BACKEND: http://localhost:2000
-        NEXT_PUBLIC_API_URL: http://localhost:2000/api
-        API_INTERNAL_URL: http://backend:2000/api
+    build: ./frontend
+    container_name: frontend
+
     restart: unless-stopped
+
+    environment:
+      API_INTERNAL_URL: http://backend:2000/api
+      NEXT_PUBLIC_API_URL: https://api.example.com/api
+
     depends_on:
       - backend
-    env_file:
-      - ./frontend/.env
-    environment:
-      NEXT_PUBLIC_API_BACKEND: http://localhost:2000
-      NEXT_PUBLIC_API_URL: http://localhost:2000/api
-      API_INTERNAL_URL: http://backend:2000/api
-    ports:
-      - "3000:3000"
+
+    expose:
+      - "3000"
 
 volumes:
   postgres_data:
