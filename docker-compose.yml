@@ -67,11 +67,10 @@ services:
 
     restart: unless-stopped
 
-    env_file:
-      - ./frontend/.env
-
     environment:
-      API_INTERNAL_URL: ${API_INTERNAL_URL}
+      API_INTERNAL_URL: http://backend:2000/api
+      NEXT_PUBLIC_BACKEND_URL: https://api.kitepkura.edu.kg
+      NEXT_PUBLIC_API_URL: https://api.kitepkura.edu.kg/api
 
     depends_on:
       - backend
