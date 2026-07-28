@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { getAccessToken, removeFromStorage } from '../cookie/token.service';
-import { authService } from '../services/auth.service';
 
 export const BASE_URL: string = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:2000';
 
