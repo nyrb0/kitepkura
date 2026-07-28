@@ -16,7 +16,7 @@ async function bootstrap() {
         },
     });
     app.enableCors({
-        origin: ['http://localhost:3000', 'http://localhost:5173', 'https://test.kitepkura.edu.kg'],
+        origin: ['http://localhost:3000', 'http://localhost:5173', 'https://kitepkura.edu.kg'],
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization'],
