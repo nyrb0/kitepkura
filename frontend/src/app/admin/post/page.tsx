@@ -18,12 +18,14 @@ import {
     FiRotateCcw,
     FiCheckCircle,
     FiLayers,
+    FiBarChart2,
 } from 'react-icons/fi';
 import { postService } from '@/shared/services/post.service';
 import { IPost, IPostsResponse } from '@/entities/models/post.types';
 import UIConfirmation from '@/shared/UI/UIСonfirmation';
 import { routers } from '@/app/router.const';
 import { BiEdit } from 'react-icons/bi';
+import { BASE_URL } from '@/shared/http/http';
 
 const LIMIT = 10;
 
@@ -98,7 +100,7 @@ const PostsPage = () => {
     };
 
     return (
-        <div className='min-h-screen w-full px-4 py-10 sm:py-16'>
+        <div className='min-h-screen w-full px-4 py-10 pb-[100px sm:py-16'>
             <div className='mx-auto w-full max-w-4xl'>
                 {/* Заголовок */}
                 <div className='mb-6 flex flex-wrap items-center justify-between gap-4'>
@@ -231,8 +233,9 @@ const PostsPage = () => {
                                 className='rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6 transition-shadow hover:shadow-[var(--shadow-elevated)]'
                                 style={{
                                     boxShadow: 'var(--shadow-card)',
-                                    opacity: post.isArchive ? 0.75 : 1,
+                                    opacity: post.isArchive ? 0.6 : 1,
                                 }}
+                                // onClick={() => router.push(routers.postId(post.slug))}
                             >
                                 <div className='flex items-start justify-between gap-4'>
                                     <div className='min-w-0 flex-1'>
@@ -270,7 +273,7 @@ const PostsPage = () => {
                                                 {post.postFiles.map(file => (
                                                     <li key={file.id}>
                                                         <a
-                                                            href={`${process.env.NEXT_PUBLIC_BACKEND_URL ?? ''}/${file.path.replace(/\\/g, '/')}`}
+                                                            href={`${BASE_URL ?? ''}/${file.path.replace(/\\/g, '/')}`}
                                                             target='_blank'
                                                             rel='noopener noreferrer'
                                                             className='flex items-center gap-1.5 rounded-[var(--radius-sm)] border px-2.5 py-1.5 text-xs text-[var(--color-text)] transition-colors hover:bg-[var(--color-neutral-100)]'
@@ -303,15 +306,17 @@ const PostsPage = () => {
                                         >
                                             <FiTrash2 className='h-4.5 w-4.5' />
                                         </button>
-                                        <button
-                                            onClick={() => router.push(routers.admin.editPost(post.slug))}
-                                            className='rounded-[var(--radius-md)] p-2.5 text-[var(--color-text-muted)] transition-colors hover:bg-[rgba(239,68,68,0.08)] hover:text-[var(--color-success-500)]'
-                                            aria-label='Удалить пост'
-                                        >
-                                            <BiEdit className='h-4.5 w-4.5' />
-                                        </button>
                                     </div>
                                 </div>
+
+                                <button
+                                    onClick={() => router.push(routers.admin.postStats(post.slug))}
+                                    className='mt-4 flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-neutral-100)]'
+                                    style={{ borderColor: 'var(--color-border)' }}
+                                >
+                                    <FiBarChart2 className='h-4 w-4' style={{ color: 'var(--color-primary-600)' }} />
+                                    Посмотреть статистику
+                                </button>
                             </div>
                         ))}
                     </div>
@@ -361,6 +366,7 @@ const PostsPage = () => {
 
             {/* Подтверждение удаления */}
             <UIConfirmation
+                onOkText='Удалять'
                 isOpen={Boolean(postToDelete)}
                 title='Удалить пост?'
                 isLoading={deleteMutation.isPending}
@@ -379,6 +385,7 @@ const PostsPage = () => {
 
             {/* Подтверждение архивации / восстановления */}
             <UIConfirmation
+                onOkText='Архивировать'
                 isOpen={Boolean(postToArchive)}
                 title={postToArchive?.isArchive ? 'Восстановить пост?' : 'Архивировать пост?'}
                 isLoading={archiveMutation.isPending}

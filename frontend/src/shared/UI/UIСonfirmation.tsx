@@ -5,12 +5,21 @@ interface IUIConfirmationProps {
     isOpen: boolean;
     onOk: () => void;
     onCancel: () => void;
+    onOkText: string;
     isLoading?: boolean;
     title?: string;
     description?: React.ReactNode;
 }
 
-export const UIConfirmation = ({ isOpen, onOk, onCancel, isLoading = false, title = 'Удалить пост?', description }: IUIConfirmationProps) => {
+export const UIConfirmation = ({
+    isOpen,
+    onOk,
+    onOkText,
+    onCancel,
+    isLoading = false,
+    title = 'Удалить пост?',
+    description,
+}: IUIConfirmationProps) => {
     // Закрытие по клавише Escape
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -86,7 +95,7 @@ export const UIConfirmation = ({ isOpen, onOk, onCancel, isLoading = false, titl
                                 <span>Удаление...</span>
                             </>
                         ) : (
-                            'Удалить'
+                            onOkText
                         )}
                     </button>
                 </div>

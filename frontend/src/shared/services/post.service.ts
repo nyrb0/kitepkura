@@ -38,4 +38,8 @@ export const postService = {
         const res = await axiosServiceAuth.post<any>(API_ROUTES.post.clickUrl(slug));
         return res.data;
     },
+    async getStats(slug: string) {
+        const res = await axiosServiceAuth.get<any>(API_ROUTES.post.stats(slug));
+        return res.data;
+    },
 };

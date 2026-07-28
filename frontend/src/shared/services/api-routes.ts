@@ -8,6 +8,7 @@ export const API_ROUTES = {
         registerView: (slug: string) => `/posts/register-view/${slug}`,
         topViewed: '/posts/top-viewed',
         clickUrl: (slug: string) => `/posts/${slug}/click-url`,
+        stats: (slug: string) => `/posts/${slug}/stats`,
     },
     visits: {
         track: '/visits/track',

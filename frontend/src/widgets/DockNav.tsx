@@ -27,6 +27,7 @@ const logoutItem: DockItem = {
 const DockIcon = ({ item }: { item: DockItem }) => {
     const router = useRouter();
     const pathname = usePathname();
+
     // Проверка активности: точное совпадение для /admin, либо совпадение по перфиксу для вложенных роутов
     const isActive = item.href === '/admin' ? pathname === '/admin' : pathname.startsWith(item.href);
 
@@ -34,7 +35,7 @@ const DockIcon = ({ item }: { item: DockItem }) => {
 
     const handleClick = () => {
         if (item.isDanger) {
-            removeFromStorage(  );
+            removeFromStorage();
             router.push(item.href);
             return;
         }
@@ -75,8 +76,12 @@ const DockIcon = ({ item }: { item: DockItem }) => {
 };
 
 const DockNav = () => {
+    const pathname = usePathname();
+    if (pathname === '/admin/login') {
+        return null;
+    }
     return (
-        <nav className='fixed bottom-6 left-1/2 z-50 -translate-x-1/2'>
+        <nav className='fixed bottom-2 left-1/2 z-50 -translate-x-1/2'>
             <div
                 className='flex items-center gap-2 rounded-2xl border border-neutral-200/80 bg-surface/70 p-2 backdrop-blur-xl shadow-elevated ring-1 ring-black/5'
                 style={{
