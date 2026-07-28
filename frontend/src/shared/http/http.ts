@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getAccessToken, removeFromStorage } from '../cookie/token.service';
 
-export const BASE_URL: string = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.kitepkura.edu.kg/api';
+export const BASE_URL: string = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.kitepkura.edu.kg';
 
 const setting = {
     baseURL: `${BASE_URL}/api`,
