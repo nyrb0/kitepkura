@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { languages, type Language } from '@/shared/i18next/client'; // Укажите правильный путь к client.ts
@@ -31,6 +31,34 @@ const Header = () => {
         router.push(newPath);
     };
 
+    const clicks = useRef(0);
+    const timer = useRef<NodeJS.Timeout | null>(null);
+
+    const handleClick = () => {
+        clicks.current += 1;
+
+        if (timer.current) {
+            clearTimeout(timer.current);
+        }
+
+        timer.current = setTimeout(() => {
+            if (clicks.current === 1) {
+                router.push('/');
+            }
+
+            clicks.current = 0;
+        }, 600);
+
+        if (clicks.current === 3) {
+            if (timer.current) {
+                clearTimeout(timer.current);
+            }
+
+            clicks.current = 0;
+            router.push('/admin');
+        }
+    };
+
     const navLinks = [
         {
             href: '/',
@@ -45,15 +73,15 @@ const Header = () => {
     return (
         <header className='sticky top-0 z-50 w-full border-b border-border/60 bg-surface/70 backdrop-blur-md'>
             <div className='mx-auto flex max-w-7xl h-16 items-center justify-between px-4 sm:px-6 lg:px-8'>
-                {/* Логотип */}
-                <Link href='/' className='flex items-center gap-2.5 group transition-transform active:scale-98'>
+                <div onClick={handleClick} className='flex items-center gap-2.5 group transition-transform active:scale-98 cursor-pointer'>
                     <img
                         src='/logo.png'
                         alt='Окуу Китеби'
                         className='h-9 w-9 rounded-full object-cover ring-2 ring-brand/10 transition group-hover:ring-brand/30'
                     />
-                    <span className='text-base font-bold tracking-tight text-text sm:text-lg'> {t('header.logo')}</span>
-                </Link>
+
+                    <span className='text-base font-bold tracking-tight text-text sm:text-lg'>{t('header.logo')}</span>
+                </div>
 
                 {/* Десктоп-навигация */}
                 <nav className='hidden items-center gap-6 md:flex'>
