@@ -60,10 +60,12 @@ services:
     container_name: frontend
 
     restart: unless-stopped
+    env_file:
+      - ./frontend/.env
 
     environment:
-      API_INTERNAL_URL: http://backend:2000/api
-      NEXT_PUBLIC_API_URL: https://api.example.com/api
+      API_INTERNAL_URL: https://api.kitepkura.edu.kg
+      NEXT_PUBLIC_API_URL: https://api.kitepkura.edu.kg
 
     depends_on:
       - backend
