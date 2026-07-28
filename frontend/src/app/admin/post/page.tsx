@@ -100,7 +100,7 @@ const PostsPage = () => {
     };
 
     return (
-        <div className='min-h-screen w-full px-4 py-10 pb-[100px sm:py-16'>
+        <div className='min-h-screen w-full px-4 py-10 sm:py-16'>
             <div className='mx-auto w-full max-w-4xl'>
                 {/* Заголовок */}
                 <div className='mb-6 flex flex-wrap items-center justify-between gap-4'>
@@ -233,9 +233,8 @@ const PostsPage = () => {
                                 className='rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6 transition-shadow hover:shadow-[var(--shadow-elevated)]'
                                 style={{
                                     boxShadow: 'var(--shadow-card)',
-                                    opacity: post.isArchive ? 0.6 : 1,
+                                    opacity: post.isArchive ? 0.75 : 1,
                                 }}
-                                // onClick={() => router.push(routers.postId(post.slug))}
                             >
                                 <div className='flex items-start justify-between gap-4'>
                                     <div className='min-w-0 flex-1'>
@@ -306,9 +305,15 @@ const PostsPage = () => {
                                         >
                                             <FiTrash2 className='h-4.5 w-4.5' />
                                         </button>
+                                        <button
+                                            onClick={() => router.push(routers.admin.editPost(post.slug))}
+                                            className='rounded-[var(--radius-md)] p-2.5 text-[var(--color-text-muted)] transition-colors hover:bg-[rgba(239,68,68,0.08)] hover:text-[var(--color-success-500)]'
+                                            aria-label='Удалить пост'
+                                        >
+                                            <BiEdit className='h-4.5 w-4.5' />
+                                        </button>
                                     </div>
                                 </div>
-
                                 <button
                                     onClick={() => router.push(routers.admin.postStats(post.slug))}
                                     className='mt-4 flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-neutral-100)]'
