@@ -15,7 +15,7 @@ interface Props {
     slug: string;
 }
 
-const fileUrl = (path: string) => `${process.env.NEXT_PUBLIC_API_BACKEND || 'http://localhost:2000'}/${path.replace(/\\/g, '/')}`;
+const fileUrl = (path: string) => `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:2000'}/${path.replace(/\\/g, '/')}`;
 
 export default function PostDetailContent({ post, slug }: Props) {
     const { t, i18n } = useTranslation();
