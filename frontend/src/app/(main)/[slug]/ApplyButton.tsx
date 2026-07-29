@@ -42,7 +42,7 @@ export default function ApplyButton({ slug, formUrl, initialClicks }: ApplyButto
     return (
         <div className='mt-5 sm:mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3'>
             <a
-                href={'#'}
+                href={formUrl}
                 rel='noreferrer'
                 onClick={handleClick}
                 className='inline-flex w-full items-center justify-center rounded-full bg-brand px-6 py-4 text-base font-semibold text-brand-foreground shadow-lg shadow-brand/20 ring-1 ring-brand/20 transition hover:bg-brand-hover hover:shadow-xl sm:w-auto sm:min-w-[180px] sm:text-lg'
