@@ -36,7 +36,7 @@ const LoginAdmin = () => {
             if (result?.accessToken) {
                 localStorage.setItem('accessToken', result.accessToken);
             }
-            router.push('/admin');
+            window.location.assign('/admin');
         } catch (err) {
             setServerError(err instanceof Error ? err.message : 'Произошла ошибка при входе');
         } finally {
