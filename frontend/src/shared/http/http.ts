@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getAccessToken, removeFromStorage } from '../cookie/token.service';
 
-export const BASE_URL: string = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:2000';
+export const BASE_URL: string = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
 const setting = {
     baseURL: `${BASE_URL}/api`,
