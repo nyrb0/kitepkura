@@ -67,6 +67,7 @@ const EditPostPage = () => {
 
     const [newFiles, setNewFiles] = useState<File[]>([]);
     const [existingFiles, setExistingFiles] = useState<ExistingPostFile[]>([]);
+    const [removedFileIds, setRemovedFileIds] = useState<string[]>([]);
     const [isDragging, setIsDragging] = useState(false);
     const [fileError, setFileError] = useState<string | null>(null);
     const [activeLocale, setActiveLocale] = useState<Locale>('ru');
@@ -171,8 +172,8 @@ const EditPostPage = () => {
     };
 
     const removeExistingFile = (id: string) => {
-        // Здесь можно либо сразу вызывать API удаления файла, либо фильтровать локальный стейт
         setExistingFiles(prev => prev.filter(f => f.id !== id));
+        setRemovedFileIds(prev => [...prev, id]); // ← запоминаем что удалили
     };
 
     const onSubmit = (data: UpdatePostFormValues) => {
@@ -187,21 +188,19 @@ const EditPostPage = () => {
         formData.append('urlForm', data.urlForm);
         formData.append('isArchive', String(data.isArchive));
 
-        // Отправляем archive_description только если включен архив
         if (data.isArchive && data.archive_description) {
             formData.append('archive_description', data.archive_description);
         } else if (!data.isArchive) {
-            formData.append('archive_description', ''); // Очищаем, если сняли архив
+            formData.append('archive_description', '');
         }
 
-        // Если бэкенд требует передачи оставшихся существующих файлов — добавьте их ID
-        // formData.append('existingFiles', JSON.stringify(existingFiles.map(f => f.id)));
+        // Отправляем ID удалённых файлов, если такие есть
+        removedFileIds.forEach(id => formData.append('removeFileIds[]', id));
 
         newFiles.forEach(file => formData.append('files', file));
 
         updatePostMutation.mutate(formData);
     };
-
     if (isPostLoading) {
         return (
             <div className='flex min-h-screen w-full items-center justify-center px-4 py-10'>

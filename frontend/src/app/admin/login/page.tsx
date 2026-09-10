@@ -5,7 +5,6 @@ import { FiLock, FiMail, FiShield } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/shared/UI/Input';
 import { Button } from '@/shared/UI/Button';
-import { axiosService } from '@/shared/http/http';
 import { authService } from '@/shared/services/auth.service';
 type LoginFormValues = {
     email: string;
@@ -22,13 +21,12 @@ const LoginAdmin = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<LoginFormValues>({
-        mode: 'onBlur',
+        mode: 'onBlur', 
     });
 
     const onSubmit = async (data: LoginFormValues) => {
         setServerError(null);
         setIsLoading(true);
-
         try {
             const res = await authService.login(data);
             const result = res.data;

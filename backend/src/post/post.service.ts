@@ -112,6 +112,25 @@ export class PostService {
     async update(slug: string, dto: UpdatePostDto, files?: Express.Multer.File[]) {
         const post = await this.findBySlug(slug);
 
+        // 1. Удаляем выбранные файлы (если переданы)
+        if (dto.removeFileIds?.length) {
+            const filesToRemove = post.postFiles.filter(doc => dto.removeFileIds!.includes(doc.id));
+
+            for (const doc of filesToRemove) {
+                try {
+                    await fs.unlink(doc.path);
+                } catch (err) {
+                    const error = err as Error;
+                    console.warn(`Не удалось удалить файл`, error.message);
+                }
+            }
+
+            await this.prisma.post_document.deleteMany({
+                where: { id: { in: dto.removeFileIds } },
+            });
+        }
+
+        // 2. Обновляем сам пост + добавляем новые файлы
         const updated = await this.prisma.post.update({
             where: { id: post.id },
             data: {
@@ -126,8 +145,6 @@ export class PostService {
                               mime_type: file.mimetype,
                               size: file.size,
                               path: file.path,
-                              created_at: new Date(),
-                              updated_at: new Date(),
                           })),
                       }
                     : undefined,
@@ -184,7 +201,6 @@ export class PostService {
                     },
                 }),
 
-                // 2. Подсчет общего количества активных постов
                 this.prisma.post.count({
                     where: { isArchive: false },
                 }),

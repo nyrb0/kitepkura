@@ -17,4 +17,9 @@ export class UpdatePostDto extends PartialType(CreatePostDto) {
     })
     @IsBoolean()
     isArchive?: boolean;
+
+    @IsOptional()
+    @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+    @IsString({ each: true })
+    removeFileIds?: string[];
 }
