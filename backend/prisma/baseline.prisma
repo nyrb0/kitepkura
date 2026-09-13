@@ -26,13 +26,10 @@ model post {
   urlClicks           Int             @default(0)
   isArchive           Boolean         @default(false)
   archive_description String?
-  deadline            DateTime?
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
   postFiles           post_document[]
   views               post_view[]
-
-  @@index([deadline, isArchive])
 }
 
 model post_view {

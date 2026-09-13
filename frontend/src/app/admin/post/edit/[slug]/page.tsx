@@ -21,6 +21,7 @@ import { postService } from '@/shared/services/post.service';
 import { routers } from '@/app/router.const';
 import { Input } from '@/shared/UI/Input';
 import { Button } from '@/shared/UI/Button';
+import { deadlineToInput, deadlineToIso, validateDeadline } from '@/shared/lib/post-deadline';
 
 type Locale = 'ru' | 'kg';
 
@@ -28,6 +29,7 @@ type UpdatePostFormValues = {
     name: Record<Locale, string>;
     description: Record<Locale, string>;
     urlForm: string;
+    deadline: string;
     isArchive: boolean;
     archive_description?: string;
 };
@@ -98,6 +100,7 @@ const EditPostPage = () => {
             name: { ru: '', kg: '' },
             description: { ru: '', kg: '' },
             urlForm: '',
+            deadline: '',
             isArchive: false,
             archive_description: '',
         },
@@ -119,6 +122,7 @@ const EditPostPage = () => {
                     kg: post.description?.kg || '',
                 },
                 urlForm: post.urlForm || '',
+                deadline: deadlineToInput(post.deadline),
                 isArchive: !!post.isArchive,
                 archive_description: post.archive_description || '',
             });
@@ -186,6 +190,7 @@ const EditPostPage = () => {
         formData.append('description[kg]', data.description.kg);
 
         formData.append('urlForm', data.urlForm);
+        formData.append('deadline', deadlineToIso(data.deadline));
         formData.append('isArchive', String(data.isArchive));
 
         if (data.isArchive && data.archive_description) {
@@ -283,6 +288,19 @@ const EditPostPage = () => {
                     )}
 
                     <form onSubmit={handleSubmit(onSubmit)} noValidate className='space-y-6'>
+                        <div>
+                            <Input
+                                label='Дедлайн (время Бишкека, UTC+6)'
+                                id='deadline'
+                                type='datetime-local'
+                                error={errors.deadline?.message}
+                                {...register('deadline', { validate: validateDeadline })}
+                            />
+                            <p className='mt-2 text-xs text-[var(--color-text-muted)]'>
+                                По наступлении срока пост автоматически попадёт в архив. Очистите поле, чтобы убрать срок.
+                                Для восстановления перенесите или уберите дедлайн и выключите «В архиве».
+                            </p>
+                        </div>
                         {/* Блок переключения Архива */}
                         <div className='rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-neutral-50)] p-4 transition-colors'>
                             <label className='flex cursor-pointer items-center justify-between gap-4'>

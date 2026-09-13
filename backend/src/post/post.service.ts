@@ -1,5 +1,5 @@
 // post.service.ts
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -7,12 +7,48 @@ import * as fs from 'fs/promises';
 import { createPostSlug } from '../../utils/post-slug';
 
 @Injectable()
-export class PostService {
+export class PostService implements OnModuleInit, OnModuleDestroy {
+    private readonly logger = new Logger(PostService.name);
+    private archiveTimer?: ReturnType<typeof setInterval>;
+    private archiveRunning = false;
+
     constructor(private readonly prisma: PrismaService) {}
 
+    async onModuleInit() {
+        await this.runArchiveCheck();
+        this.archiveTimer = setInterval(() => { void this.runArchiveCheck(); }, 60_000);
+        this.archiveTimer.unref();
+    }
+
+    onModuleDestroy() {
+        if (this.archiveTimer) clearInterval(this.archiveTimer);
+    }
+
+    private async runArchiveCheck() {
+        if (this.archiveRunning) return;
+        this.archiveRunning = true;
+        try {
+            await this.archiveExpiredPosts();
+        } catch (error) {
+            this.logger.error('Failed to archive expired posts', error);
+        } finally {
+            this.archiveRunning = false;
+        }
+    }
+
+    async archiveExpiredPosts() {
+        return this.prisma.post.updateMany({
+            where: { isArchive: false, deadline: { lte: new Date() } },
+            data: { isArchive: true },
+        });
+    }
+
     async create(dto: CreatePostDto, files: Express.Multer.File[]) {
+        const deadline = dto.deadline ? new Date(dto.deadline) : null;
         const post = await this.prisma.post.create({
             data: {
+                deadline,
+                isArchive: deadline !== null && deadline.getTime() <= Date.now(),
                 slug: createPostSlug(dto.name.ru),
                 name: { ...dto.name },
                 description: { ...dto.description },
@@ -35,6 +71,7 @@ export class PostService {
     }
 
     async findAll(page = 1, limit = 10, isArchive?: boolean) {
+        await this.archiveExpiredPosts();
         const skip = (page - 1) * limit;
 
         // Формируем фильтр: если isArchive передан (boolean), фильтруем по нему, иначе — undefined (Prisma проигнорирует)
@@ -86,6 +123,7 @@ export class PostService {
     }
 
     async findBySlug(slug: string) {
+        await this.archiveExpiredPosts();
         const post = await this.prisma.post.findUnique({
             where: { slug },
             include: {
@@ -111,6 +149,8 @@ export class PostService {
 
     async update(slug: string, dto: UpdatePostDto, files?: Express.Multer.File[]) {
         const post = await this.findBySlug(slug);
+        const deadline = dto.deadline === undefined ? post.deadline : dto.deadline ? new Date(dto.deadline) : null;
+        const expired = deadline !== null && deadline.getTime() <= Date.now();
 
         // 1. Удаляем выбранные файлы (если переданы)
         if (dto.removeFileIds?.length) {
@@ -135,7 +175,9 @@ export class PostService {
             where: { id: post.id },
             data: {
                 name: dto.name ? { ...dto.name } : undefined,
-                isArchive: dto.isArchive ?? false,
+                deadline: dto.deadline === undefined ? undefined : deadline,
+                isArchive: expired ? true : dto.isArchive ?? post.isArchive,
+                archive_description: dto.archive_description,
                 urlForm: dto.urlForm ?? undefined,
                 description: dto.description ? { ...dto.description } : undefined,
                 postFiles: files?.length
@@ -177,6 +219,7 @@ export class PostService {
 
     async getTopViewedPosts() {
         try {
+            await this.archiveExpiredPosts();
             // Запускаем оба запроса параллельно
             const [posts, activeCount] = await Promise.all([
                 // 1. Топ-3 по просмотрам среди неархивных

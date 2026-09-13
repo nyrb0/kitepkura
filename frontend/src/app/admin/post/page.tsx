@@ -390,25 +390,29 @@ const PostsPage = () => {
 
             {/* Подтверждение архивации / восстановления */}
             <UIConfirmation
-                onOkText='Архивировать'
+                onOkText={postToArchive?.isArchive ? 'Восстановить' : 'Архивировать'}
                 isOpen={Boolean(postToArchive)}
                 title={postToArchive?.isArchive ? 'Восстановить пост?' : 'Архивировать пост?'}
                 isLoading={archiveMutation.isPending}
                 onCancel={() => setPostToArchive(null)}
-                onOk={() =>
-                    postToArchive &&
+                onOk={() => {
+                    if (!postToArchive) return;
+                    if (postToArchive.isArchive && postToArchive.deadline && new Date(postToArchive.deadline).getTime() <= Date.now()) {
+                        router.push(routers.admin.editPost(postToArchive.slug));
+                        return;
+                    }
                     archiveMutation.mutate({
                         slug: postToArchive.slug,
                         isArchive: !postToArchive.isArchive,
-                    })
-                }
+                    });
+                }}
                 description={
                     postToArchive && (
                         <p>
                             {postToArchive.isArchive ? (
                                 <>
                                     Пост «<span className='font-medium text-[var(--color-text)]'>{postToArchive.name.ru}</span>» снова станет виден в
-                                    общем списке.
+                                    общем списке. Если дедлайн уже прошёл, откроется редактор: перенесите или уберите срок и выключите «В архиве».
                                 </>
                             ) : (
                                 <>

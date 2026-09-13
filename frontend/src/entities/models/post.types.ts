@@ -22,6 +22,7 @@ export interface IPost {
     urlForm: string;
     urlClicks: number;
     archive_description?: string;
+    deadline: string | null;
     createdAt: string;
     updatedAt: string;
     isArchive: boolean;
@@ -39,4 +40,4 @@ export interface IPostsResponse {
     };
 }
 
-export type ITopPostItem = Omit<IPost, 'urlForm' | 'archive_description' | 'updatedAt' | 'isArchive' | 'postFiles'>;
+export type ITopPostItem = Omit<IPost, 'urlForm' | 'archive_description' | 'deadline' | 'updatedAt' | 'isArchive' | 'postFiles'>;

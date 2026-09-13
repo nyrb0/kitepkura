@@ -6,7 +6,7 @@ import { Transform } from 'class-transformer';
 export class UpdatePostDto extends PartialType(CreatePostDto) {
     @IsString()
     @IsOptional()
-    archive_description: string;
+    archive_description?: string;
 
     @IsOptional()
     @Transform(({ value }) => {

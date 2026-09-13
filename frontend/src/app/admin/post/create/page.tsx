@@ -9,6 +9,7 @@ import { postService } from '@/shared/services/post.service';
 import { routers } from '@/app/router.const';
 import { Input } from '@/shared/UI/Input';
 import { Button } from '@/shared/UI/Button';
+import { deadlineToIso, validateDeadline } from '@/shared/lib/post-deadline';
 
 type Locale = 'ru' | 'kg';
 
@@ -16,6 +17,7 @@ type CreatePostFormValues = {
     name: Record<Locale, string>;
     description: Record<Locale, string>;
     urlForm: string;
+    deadline: string;
 };
 
 const MAX_FILES = 10;
@@ -56,6 +58,7 @@ const CreatePostPage = () => {
             name: { ru: '', kg: '' },
             description: { ru: '', kg: '' },
             urlForm: '',
+            deadline: '',
         },
     });
 
@@ -106,6 +109,7 @@ const CreatePostPage = () => {
         formData.append('description[kg]', data.description.kg);
 
         formData.append('urlForm', data.urlForm);
+        formData.append('deadline', deadlineToIso(data.deadline));
         files.forEach(file => formData.append('files', file));
 
         createPostMutation.mutate(formData);
@@ -164,6 +168,19 @@ const CreatePostPage = () => {
                     )}
 
                     <form onSubmit={handleSubmit(onSubmit)} noValidate className='space-y-6'>
+                        <div>
+                            <Input
+                                label='Дедлайн (время Бишкека, UTC+6)'
+                                id='deadline'
+                                type='datetime-local'
+                                error={errors.deadline?.message}
+                                {...register('deadline', { validate: validateDeadline })}
+                            />
+                            <p className='mt-2 text-xs text-[var(--color-text-muted)]'>
+                                Необязательно. По наступлении срока пост автоматически попадёт в архив.
+                                Если срок уже прошёл, пост будет создан в архиве.
+                            </p>
+                        </div>
                         {/* Табы языков */}
                         <div
                             className='flex items-center gap-1 rounded-[var(--radius-md)] p-1'

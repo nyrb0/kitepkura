@@ -1,6 +1,8 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
+import { useCallback, useState } from 'react';
+import PostDeadlineTimer from './PostDeadlineTimer';
 
 import ClientPdfViewer from '@/components/ClientPdfViewer';
 import SocialShare from '@/components/SocialShare';
@@ -20,6 +22,9 @@ const fileUrl = (path: string) => `${process.env.NEXT_PUBLIC_BACKEND_URL || BASE
 
 export default function PostDetailContent({ post, slug }: Props) {
     const { t, i18n } = useTranslation();
+    const [expiredDeadline, setExpiredDeadline] = useState<string | null>(null);
+    const handleExpire = useCallback(() => setExpiredDeadline(post.deadline), [post.deadline]);
+    const isClosed = post.isArchive || Boolean(post.deadline && expiredDeadline === post.deadline);
 
     const getLocalized = (value: { ru: string; ky?: string; kg?: string }) => {
         return value[i18n.language as keyof typeof value] || value.ru;
@@ -30,7 +35,7 @@ export default function PostDetailContent({ post, slug }: Props) {
 
     const formUrl = post.urlForm;
 
-    const badge = post.isArchive ? t('post.archive') : t('post.open');
+    const badge = isClosed ? t('post.archive') : t('post.open');
 
     const date = new Date(post.createdAt);
 
@@ -56,7 +61,9 @@ export default function PostDetailContent({ post, slug }: Props) {
 
                     <p className='mt-3 max-w-3xl text-base text-text-muted sm:mt-4 sm:text-lg'>{subtitle}</p>
 
-                    {!post.isArchive && <ApplyButton slug={post.slug} formUrl={formUrl} initialClicks={post.urlClicks ?? 0} />}
+                    {post.deadline && <PostDeadlineTimer deadline={post.deadline} isArchive={post.isArchive} onExpire={handleExpire} />}
+
+                    {!isClosed && <ApplyButton slug={post.slug} formUrl={formUrl} initialClicks={post.urlClicks ?? 0} />}
 
                     <div className='mt-6 flex justify-end border-t border-border pt-4'>
                         <div className='flex items-center gap-2 text-sm text-text-muted'>
@@ -80,7 +87,7 @@ export default function PostDetailContent({ post, slug }: Props) {
                         </div>
                     )}
 
-                    {!post.isArchive && (
+                    {!isClosed && (
                         <div className='rounded-2xl border border-border bg-neutral-900 p-6 text-white shadow-[var(--shadow-card)] sm:rounded-3xl sm:p-8'>
                             <h2 className='text-xl font-semibold sm:text-2xl'>{t('post.participate')}</h2>
 
