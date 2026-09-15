@@ -79,7 +79,7 @@ export default function PostDetailContent({ post, slug }: Props) {
                         <div className='rounded-2xl border border-border bg-surface p-3 shadow-[var(--shadow-card)] sm:rounded-3xl sm:p-6'>
                             {post.postFiles.map((file, index) => (
                                 <div key={file.id} className={index > 0 ? 'mt-10' : ''}>
-                                    <h2 className='mb-3 text-lg font-semibold text-text sm:text-xl'>{file.original_name}</h2>
+                                    <h2 className='mb-3 text-lg font-semibold text-text sm:text-xl'>Документ {index + 1}</h2>
 
                                     <ClientPdfViewer fileUrl={fileUrl(file.path)} fileName={file.original_name} />
                                 </div>
