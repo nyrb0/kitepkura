@@ -8,6 +8,14 @@
         "viewDetails": "Кенен маалымат / Арыз берүү",
         "loadError": "Сынактардын тизмесин жүктөө мүмкүн болгон жок"
     },
+    "archive": {
+        "empty": "Архивде азырынча сынактар жок",
+        "viewDetails": "Кенен маалымат",
+        "pagination": "Архив барактары",
+        "previous": "Артка",
+        "next": "Кийинки",
+        "page": "{{page}}-барак"
+    },
     "header": {
         "logo": "Kitepkura",
         "openCompetitions": "Ачык сынактар",

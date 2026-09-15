@@ -8,6 +8,14 @@
         "viewDetails": "Подробнее / Подать заявку",
         "loadError": "Не удалось загрузить список конкурсов"
     },
+    "archive": {
+        "empty": "В архиве пока нет конкурсов",
+        "viewDetails": "Подробнее",
+        "pagination": "Страницы архива",
+        "previous": "Назад",
+        "next": "Далее",
+        "page": "Страница {{page}}"
+    },
     "header": {
         "logo": "Kitepkura",
         "openCompetitions": "Открытые конкурсы",

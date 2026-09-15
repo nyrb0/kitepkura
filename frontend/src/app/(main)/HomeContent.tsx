@@ -32,6 +32,8 @@ interface Post {
 
 interface Props {
     posts: Post[];
+    archive?: boolean;
+    pagination?: { page: number; totalPages: number };
 }
 
 function formatDate(isoString: string) {
@@ -45,7 +47,7 @@ function formatDate(isoString: string) {
     return `${day}.${month} ${hours}:${minutes}`;
 }
 
-export default function HomeContent({ posts }: Props) {
+export default function HomeContent({ posts, archive = false, pagination }: Props) {
     const { t, i18n } = useTranslation();
 
     const getLocalized = (value: LocalizedString) => {
@@ -58,13 +60,13 @@ export default function HomeContent({ posts }: Props) {
                 {/* Баннер / Заголовок */}
                 <div className='rounded-2xl border border-border/80 bg-surface p-5 shadow-card transition-all duration-300 sm:p-8 hover:shadow-md'>
                     <p className='text-xs font-bold uppercase tracking-[0.15em] text-brand'>{t('home.brand')}</p>
-                    <h1 className='mt-3 text-2xl font-bold tracking-tight text-text sm:text-3xl'>{t('home.title')}</h1>
+                    <h1 className='mt-3 text-2xl font-bold tracking-tight text-text sm:text-3xl'>{t(archive ? 'header.closedCompetitions' : 'home.title')}</h1>
                 </div>
 
                 {/* Список постов */}
                 {posts.length === 0 ? (
                     <div className='rounded-2xl border border-dashed border-border bg-surface/50 p-12 text-center text-neutral-500 transition-all duration-300'>
-                        {t('home.empty')}
+                        {t(archive ? 'archive.empty' : 'home.empty')}
                     </div>
                 ) : (
                     <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
@@ -79,6 +81,7 @@ export default function HomeContent({ posts }: Props) {
                                 <div>
                                     <div className='flex items-center gap-2 text-xs font-medium text-neutral-400 transition-colors duration-200 group-hover:text-neutral-500'>
                                         <span>{formatDate(post.createdAt)}</span>
+                                        {archive && <span className='rounded-full bg-neutral-100 px-2 py-1'>{t('post.archive')}</span>}
                                     </div>
 
                                     <h2 className='mt-3 line-clamp-2 text-xl font-bold text-text transition-colors duration-200 group-hover:text-brand'>
@@ -108,12 +111,27 @@ export default function HomeContent({ posts }: Props) {
 
                                 <div className='mt-6'>
                                     <div className='flex w-full items-center justify-center rounded-xl bg-neutral-100 px-4 py-3 text-sm font-semibold text-text transition-all duration-300 group-hover:bg-brand group-hover:text-brand-foreground group-hover:shadow-md group-hover:shadow-brand/20'>
-                                        <span>{t('home.viewDetails')}</span>
+                                        <span>{t(archive ? 'archive.viewDetails' : 'home.viewDetails')}</span>
                                     </div>
                                 </div>
                             </Link>
                         ))}
                     </div>
+                )}
+                {archive && pagination && (pagination.totalPages > 1 || pagination.page > 1) && (
+                    <nav aria-label={t('archive.pagination')} className='flex flex-wrap items-center justify-center gap-4'>
+                        {pagination.page > 1 && (
+                            <Link href={`/${i18n.language}/closed-competiton?page=${pagination.page - 1}`} className='rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold hover:text-brand'>
+                                {t('archive.previous')}
+                            </Link>
+                        )}
+                        <span className='text-sm text-text-muted'>{t('archive.page', { page: pagination.page })}</span>
+                        {pagination.page < pagination.totalPages && (
+                            <Link href={`/${i18n.language}/closed-competiton?page=${pagination.page + 1}`} className='rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold hover:text-brand'>
+                                {t('archive.next')}
+                            </Link>
+                        )}
+                    </nav>
                 )}
             </section>
         </main>
